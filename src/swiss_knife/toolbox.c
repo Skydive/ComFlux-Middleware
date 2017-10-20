@@ -7,6 +7,8 @@
 
 
 #include <unistd.h>
+#include <limits.h>
+
 #include <array.h>
 #include <middleware.h>
 #include <endpoint.h>
@@ -16,6 +18,12 @@
 
 int operation_done = 0;
 char* data = NULL;
+
+char* CWD[PATH_MAX];
+
+void toolbox_init() {
+	getcwd(CWD, sizeof(CWD));
+}
 
 void print_json_handler(MESSAGE* msg)
 {
@@ -330,11 +338,26 @@ void one_shot_msg(
 			"msg (-M): %s\n\n",
 			addr, msg_schema_path, map_query, msg);
 
+
+	char* abs_msg_schema_path[PATH_MAX];
+	if(strlen(msg_schema_path) < 1) {
+		printf("Invalid path. Exiting...\n");
+		return;
+	}
+
+	if(msg_schema_path[0] == '/') {
+		sprintf(abs_msg_schema_path, "%s", msg_schema_path);
+	} else {
+		sprintf(abs_msg_schema_path, "%s/%s", CWD, msg_schema_path);
+	}
+
 	/* Instantiate ep. */
 	ENDPOINT *req_ep = endpoint_new_src_file(
 			"tool msg",
 			"connects to a sink endpoint",
-			msg_schema_path);
+			abs_msg_schema_path);
+
+	printf("Abs schema path: %s\n", abs_msg_schema_path);
 
 	int map_result = endpoint_map_to(req_ep, addr, map_query, "");
 	printf("\tMap result: %d \n", map_result);
@@ -345,5 +368,6 @@ void one_shot_msg(
 	}
 
 	endpoint_send_message(req_ep, msg);
+	//TODO: Fix this SEGFAULT
 	endpoint_unmap_all(req_ep);
 }

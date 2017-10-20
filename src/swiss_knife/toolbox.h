@@ -8,6 +8,8 @@
 #ifndef TOOLBOX_H_
 #define TOOLBOX_H_
 
+void init_toolbox();
+
 void terminate(const char* addr);
 
 void add_rdc(const char* cpt_addr, const char* rdc_addr);

@@ -865,6 +865,7 @@ int endpoint_unmap_all(ENDPOINT* endpoint)
 			"core", "unmap_all", "int",
 			endpoint->id, NULL);
 
+	printf("unmap all result: %s", result);
 	sscanf(result, "%010d", &return_value);
 	return return_value;
 }

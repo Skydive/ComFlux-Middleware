@@ -368,7 +368,6 @@ int ep_map(LOCAL_EP *ep_local, STATE* state)
 
 	 array_add(ep_local->mappings_states, state);
 	 state->lep = ep_local;
-
 	return EP_OK;
 }
 

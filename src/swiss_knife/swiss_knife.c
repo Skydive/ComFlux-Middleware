@@ -223,6 +223,7 @@ int parse_opt(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
+	toolbox_init();
 	char* sk_cfg_file;
 	if (chdir(ETC) == -1)
 	{
@@ -249,18 +250,14 @@ int main(int argc, char **argv)
 	printf("Load coms module result: %s\n", load_cfg_result==0?"ok":"error");
 
 	//printf("good ...\n");
-	terminate("127.0.0.1:1508");
+	//terminate("127.0.0.1:1508");
 	//add_rdc("127.0.0.1:1505", "127.0.0.1:1508");
 	//map("127.0.0.1:1505", "[\"ep_name = 'sink'\"]", "127.0.0.1:1503", "");
 	//map_lookup("127.0.0.1:1501", "[\"ep_name = 'sink'\"]", "ep_name = 'source'");
 	//rdc_list("127.0.0.1:1508");
 	//sleep(10);
 
-sleep(1);
-	// Argument parsing
 	parse_opt(argc, argv);
-
-	// Do the job
 	execute_cmd();
 
 	if(result)
@@ -274,6 +271,7 @@ sleep(1);
 			printf("%s", result);
 	}
 
+	printf("Terminating core...\n");
 	mw_terminate_core();
 	return 0;
 }

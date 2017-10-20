@@ -243,6 +243,7 @@ void core_on_message(STATE* state_ptr, MESSAGE* _msg)
 		;
 	}
 	//message_free(_msg);
+	printf("POST ON MESSAGE EEEe\n");
 }
 //{a{MiFjpFCUJ7}{0000000184}{{ "status": 9, "msg_json": { "value": "41.24'12.2\"N 2.10'26.5\"E", "date": "2012-04-23T18:25:43.511Z" }, "ep_id": "MiFjpFCUJ7", "msg_id": "0000000008", "conn": 8, "module": "comtcp" }}}
 /* core_on_component_message handles messages from the component.
