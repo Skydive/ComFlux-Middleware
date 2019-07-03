@@ -328,7 +328,7 @@ void endpoint_send_stream(ENDPOINT* endpoint, char* msg)
 char* endpoint_send_request(ENDPOINT* endpoint, const char* msg)
 {
 	const char* _msg;
-	if (msg == NULL)
+	if (msg != NULL)
 		_msg = msg;
 	else
 		_msg = "";
@@ -865,7 +865,6 @@ int endpoint_unmap_all(ENDPOINT* endpoint)
 			"core", "unmap_all", "int",
 			endpoint->id, NULL);
 
-	printf("unmap all result: %s", result);
 	sscanf(result, "%010d", &return_value);
 	return return_value;
 }

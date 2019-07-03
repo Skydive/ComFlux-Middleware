@@ -108,11 +108,16 @@ void atexit_cb()
 #ifdef __ANDROID__
 	exit(0);
 #endif // __ANDROID__
+
 }
 
 void int_handler(int sig)
 {
+	// Kill properly...
+	mw_terminate_core();
 	atexit_cb();
+	printf("SIGINT: Terminating process...\n");
+	exit(1);
 }
 
 

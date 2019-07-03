@@ -45,7 +45,9 @@ void register_default_endpoints();
 
 void int_handler(int sig)
 {
+	printf("SIGINT: Terminating core...\n");
 	core_terminate();
+	exit(1);
 }
 
 int core_init(const char* _app_name, const char* _app_key)

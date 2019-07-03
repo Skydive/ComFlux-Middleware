@@ -297,14 +297,15 @@ int core_ep_send_response(LOCAL_EP* lep, const char* req_id, const char* resp)
         return EP_NO_SEND;
     }
 
-    JSON* resp_json = json_new(resp);
-
+    JSON* resp_json_parent = json_new(resp);
+		JSON* resp_json = json_get_json(resp_json_parent, "msg_json");
     // MESSAGE *resp_msg = message_parse(resp);
     // resp_msg->msg = strdup_null(resp);
 
     ep_send_json(lep, resp_json, req_id, MSG_RESP_LAST);
 
     json_free(resp_json);
+		json_free(resp_json_parent);
 
     // message_free(resp_msg);
     return 0;

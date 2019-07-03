@@ -133,7 +133,7 @@ void map(const char* from_addr, const char* from_query, const char* dest_addr, c
 	JSON* map_json = json_new(NULL);
 	json_set_array(map_json, "endpoint", from_query_array);
 	json_set_str(map_json, "address", dest_addr);
-	json_set_array(map_json, "query", dest_query_array);
+	json_set_array(map_json, "ep_query", dest_query_array);
 
 	printf("request; %s\n", json_to_str(map_json));
 
