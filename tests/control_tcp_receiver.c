@@ -253,7 +253,9 @@ void* tcp_receive_function(void* conn)
         if (buf == NULL)
             return NULL;
 
-        /* apply message handler */
+
+				slog(SLOG_DEBUG, "TCP RECEIVE FUNCTION: %s\n", buf);
+				/* apply message handler */
         buffer_update(api_buffer, buf, strlen(buf));
 
         free(buf); /* TODO: it can't be passed btw threads */

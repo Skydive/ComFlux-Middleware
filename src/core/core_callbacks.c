@@ -355,6 +355,7 @@ void call_external_command_handler(STATE* state_ptr, MESSAGE* msg)
 	/* apply the handler of the ep for incoming messages */
 	if(state_ptr->lep->ep->handler != NULL)
 	{
+		slog(SLOG_DEBUG, "CALL_EXTERNAL CMD HANDLER: %s\n", message_to_str(msg));
 		(*state_ptr->lep->ep->handler)(msg);
 	}
 	else/* do nothing*/

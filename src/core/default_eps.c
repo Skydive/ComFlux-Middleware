@@ -42,6 +42,8 @@ void map_handler(MESSAGE* msg)
 {
 	JSON* map_json = msg->_msg_json;
 
+	printf("map_handler: %s\n", json_to_str(map_json));
+
 	Array* ep_array = json_get_array(map_json, "endpoint");
 	JSON* ep_json = json_new(NULL);
 	json_set_array(ep_json, NULL, ep_array);

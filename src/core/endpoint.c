@@ -546,6 +546,7 @@ int ep_send_message(LOCAL_EP *lep, MESSAGE* msg)
 	//LOCAL_EP *lep = (LOCAL_EP*)(ep->data);
 	STATE* state;
 	int i;
+	slog(SLOG_DEBUG, "EP SEND MESSAGE: %s\n", message_to_str(msg));
 	for(i=0; i<array_size(lep->mappings_states); i++)
 	{
 		state = array_get(lep->mappings_states, i);

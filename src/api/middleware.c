@@ -828,7 +828,6 @@ void buffer_reset(BUFFER* buffer)
 
 void buffer_update(BUFFER* buffer, const void* new_data, unsigned int new_size)
 {
-	
 	unsigned int i=0;
 	unsigned int word_start = i;
 	unsigned int word_end = i;

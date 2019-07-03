@@ -433,6 +433,7 @@ void endpoint_send_response(ENDPOINT* endpoint, const char* req_id, const char* 
 
     char* msg_str = message_to_str(resp_msg);
 
+		slog(SLOG_DEBUG, "EP SEND R: %s\n", msg_str);
     mw_call_module_function(
             "core", "ep_send_response_", "voi",
             endpoint->id, resp_msg->msg_id, msg_str, NULL);
@@ -465,6 +466,7 @@ void endpoint_send_last_response(ENDPOINT* endpoint, const char* req_id, const c
 	json_set_json(new_msg, "response", json_new(msg));
 
 	//resp_msg = message_new(ep, req_id, msg, MSG_RESP_LAST); /* 1 = the last message */
+	slog(SLOG_DEBUG, "EP SEND LAST R: %s\n", message_to_str(resp_msg));
 	resp_msg = message_new(msg, MSG_RESP_LAST);
 	resp_msg->msg_id = strdup_null(req_id);
 	resp_msg->ep = endpoint;
@@ -486,6 +488,7 @@ void endpoint_send_last_response_json(ENDPOINT* endpoint, const char* req_id, JS
 	json_set_json(new_msg, "response", msg);
 
 	//resp_msg = message_new(ep, req_id, msg, MSG_RESP_LAST); /* 1 = the last message */
+	slog(SLOG_DEBUG, "EP SEND LAST R JSON: %s\n", message_to_str(resp_msg));
 	resp_msg = message_new_json(msg, MSG_RESP_LAST);
 	resp_msg->msg_id = strdup_null(req_id);
 	resp_msg->ep = endpoint;

@@ -260,6 +260,8 @@ int core_ep_send_message(LOCAL_EP* lep, const char* msg_id, const char* msg)
 
     MESSAGE* msg_msg = message_new_id_json(msg_id, msg_json, MSG_MSG);
     char* msg_to_send = message_to_str(msg_msg);
+
+		slog(SLOG_DEBUG, "CORE_EP_SEND_MESSAGE: %s", msg_to_send);
     ep_send(lep, msg_to_send, strlen(msg_to_send));
 
     json_free(msg_json);
@@ -277,11 +279,14 @@ int core_ep_send_request(LOCAL_EP* lep, const char* req_id, const char* req)
     {
         return EP_NO_RECEIVE;
     }
-    JSON* req_json = json_new(req);
+    JSON* req_json_parent = json_new(req);
+		JSON* req_json = json_get_json(req_json_parent, "msg_json");
 
-    ep_send_json(lep, req_json, req_id, MSG_REQ);
+		slog(SLOG_DEBUG, "CORE EP SEND R: %s", req);
+		ep_send_json(lep, req_json, req_id, MSG_REQ);
 
     json_free(req_json);
+		json_free(req_json_parent);
 
     return 0;
 }
@@ -298,10 +303,13 @@ int core_ep_send_response(LOCAL_EP* lep, const char* req_id, const char* resp)
     }
 
     JSON* resp_json_parent = json_new(resp);
+
+		// TODO: Potential fix is flawed
 		JSON* resp_json = json_get_json(resp_json_parent, "msg_json");
     // MESSAGE *resp_msg = message_parse(resp);
     // resp_msg->msg = strdup_null(resp);
 
+		slog(SLOG_DEBUG, "CORE EP SEND RESP: %s", resp);
     ep_send_json(lep, resp_json, req_id, MSG_RESP_LAST);
 
     json_free(resp_json);
