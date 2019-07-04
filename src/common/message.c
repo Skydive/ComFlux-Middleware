@@ -17,8 +17,10 @@ extern HashMap* endpoints;
 
 MESSAGE* message_new(const char* msg_, unsigned int status_)
 {
+	const char* msg = (msg != NULL) ? msg_ : "";
+
 	MESSAGE* message = (MESSAGE*)malloc(sizeof(MESSAGE));
-	message->_msg_json = json_new(msg_);
+	message->_msg_json = json_new(msg);
 	//message->msg_str = NULL;//strdup_null(msg_);
 	message->status = status_;
 
@@ -29,8 +31,8 @@ MESSAGE* message_new(const char* msg_, unsigned int status_)
 	message->conn = 0;
 	message->module = NULL;
 
-	message->data = (void*)msg_;
-	message->size = strlen(msg_);
+	message->data = (void*)msg;
+	message->size = strlen(msg);
 	return message;
 }
 

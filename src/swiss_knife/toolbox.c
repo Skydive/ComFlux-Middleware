@@ -135,11 +135,17 @@ void map(const char* from_addr, const char* from_query, const char* dest_addr, c
 	json_set_str(map_json, "address", dest_addr);
 	json_set_array(map_json, "ep_query", dest_query_array);
 
+	Array* cpt_query_array = array_new(NULL);
+	json_set_array(map_json, "cpt_query", cpt_query_array);
+
 	printf("request; %s\n", json_to_str(map_json));
 
 	//MESSAGE* resp =
 	endpoint_send_request_blocking(map_ep, json_to_str(map_json));
 	//printf("\tresponse: %s\n", message_to_str(resp));
+
+
+	array_free(cpt_query_array);
 
 	//sleep(1);
 	//core_unmap_all(map_ep);

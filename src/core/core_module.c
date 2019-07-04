@@ -279,7 +279,7 @@ int core_ep_send_request(LOCAL_EP* lep, const char* req_id, const char* req)
     {
         return EP_NO_RECEIVE;
     }
-    JSON* req_json_parent = json_new(req);
+		JSON* req_json_parent = json_new(req);
 		JSON* req_json = json_get_json(req_json_parent, "msg_json");
 
 		slog(SLOG_DEBUG, "CORE EP SEND R: %s", req);
