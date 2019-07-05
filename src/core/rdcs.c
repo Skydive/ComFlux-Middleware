@@ -178,6 +178,7 @@ void rdc_register(RDC* r, MESSAGE* register_msg, int flag)
 		register_msg->ep = ep_reg_rdc->ep;
 
 	    //sync_init(rdc_register_pipe);
+		slog(SLOG_DEBUG, "%s: REGISTER MAP MESSAGE SEND, %s", __func__, message_to_str(register_msg));
 		core_ep_send_message(ep_reg_rdc, message_generate_id(), message_to_str(register_msg));
 
 		//sync_wait(rdc_register_pipe[1]);

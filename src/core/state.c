@@ -177,7 +177,6 @@ void buffer_update(BUFFER* buffer, const void* new_data, unsigned int new_size) 
 							{
 								MESSAGE* msg = message_parse(buffer->data);
 								JSON* js=msg->_msg_json;
-								slog(SLOG_DEBUG, "BUFFER UPDATE: %s\n", buffer->data);
 								(*buffer->state->on_message)(buffer->state, msg);
 								json_free(js);
 								message_free(msg);

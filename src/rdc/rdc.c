@@ -94,6 +94,7 @@ void* rdc_getmd_request(void* closure)
 
 void rdc_register_handler(MESSAGE *msg)
 {
+	slog(SLOG_DEBUG, "%s", __func__);
   printf("\nRegistration message received:\n");
 
   JSON* registration_json = msg->_msg_json;
@@ -312,11 +313,6 @@ int parse_rdc_cfg_file(const char* cfg_file)
   return 0;
 }
 
-void exit_handler(int s) {
-	printf("Terminating process...\n");
-	exit(1);
-}
-
 int main(int argc, char* argv[])
 {
 
@@ -354,8 +350,6 @@ int main(int argc, char* argv[])
   result = config_load_com_libs();
   printf(">>>%d\n\n", result);
   config_load_access_libs();
-
-	signal(SIGINT, exit_handler);
 
   /* apply all in config file */
   if(parse_rdc_cfg_file(rdc_cfg_file) != 0)

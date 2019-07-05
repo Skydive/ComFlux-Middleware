@@ -737,14 +737,18 @@ char* core_get_remote_manifest(COM_MODULE* module, int conn)
  * don't forget to free
  */
 char* _core_get_id(char id[50],
-		const char* module_id, const char* function_id, const char* return_type)
+		const char* module_id, const char* function_id_, const char* return_type)
 {
-    //char* id;
+	  //char* id_;
     //id = (char*)malloc(50 * sizeof(char));
 
-    strcpy(id, module_id);
-    strcat(id, function_id);
-    strcat(id, return_type);
+	// pad function_id to 17 characters...
+	char function_id[] = "_________________"; // Length 17
+	strncpy(function_id, function_id_, strlen(function_id_) < 17 ?: sizeof(function_id));
 
-    return id;
+	strcpy(id, module_id);
+	strcat(id, function_id);
+	strcat(id, return_type);
+
+	return id;
 }

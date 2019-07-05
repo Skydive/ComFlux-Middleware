@@ -385,6 +385,7 @@ void core_add_rdc_array(Array* argv)
 
 void core_rdc_register_array(Array* argv)
 {
+	slog(SLOG_DEBUG, "CORE: %s", __func__);
 	if (array_size(argv) < 2)
 		core_rdc_register(NULL, NULL) ;
 	else
@@ -654,7 +655,7 @@ int _core_init()
 
 	map_insert(void_function_table_array, _core_get_id(id, "core", "add_rdc",           "voi"), core_add_rdc_array);
 	//map_insert(void_function_table_array, _core_get_id(id, "core", "remove_rdc", "voi"), core_remove_rdc_array);
-	map_insert(void_function_table_array, _core_get_id(id, "core", "rdc_register",      "voi"), core_rdc_register_array);
+	map_insert(void_function_table_array, _core_get_id(id, "core", "rdc_register", "voi"), core_rdc_register_array);
 	map_insert(void_function_table_array, _core_get_id(id, "core", "rdc_unregister",    "voi"), core_rdc_unregister_array);
 
 	map_insert(void_function_table_array, _core_get_id(id, "core", "ep_add_filter____", "voi"), core_add_filter_array);

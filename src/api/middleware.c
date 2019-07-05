@@ -255,10 +255,15 @@ const char* mw_get_manifest()
 
 int mw_call_module_function2(
 		const char* module_id,
-		const char* function_id,
+		const char* function_id_,
 		const char* return_type,
 		...)
 {
+	// pad function_id to 17 characters...
+	char function_id[] = "_________________"; // Length 17
+	strncpy(function_id, function_id_, strlen(function_id_) < 17 ?: sizeof(function_id));
+
+
 	va_list arguments;
 	Array * argv = array_new(ELEM_TYPE_STR);
 
@@ -301,10 +306,14 @@ const char* arg_start = "\"a\":{";
 char str[14];
 int mw_call_module_function(
 		const char* module_id,
-		const char* function_id,
+		const char* function_id_,
 		const char* return_type,
 		...)
 {
+
+	// pad function_id to 17 characters...
+	char function_id[] = "_________________"; // Length 17
+	strncpy(function_id, function_id_, strlen(function_id_) < 17 ?: sizeof(function_id));
 
 	char *msg_id = message_generate_id();
 	(*(sockpair_module->fc_send))(app_core_conn, &delim1, 1);
@@ -350,10 +359,14 @@ int mw_call_module_function(
 
 void* mw_call_module_function_blocking2(
 		const char * module_id,
-		const char * function_id,
+		const char * function_id_,
 		const char * return_type,
 		...)
 {
+	// pad function_id to 17 characters...
+	char function_id[] = "_________________"; // Length 17
+	strncpy(function_id, function_id_, strlen(function_id_) < 17 ?: sizeof(function_id));
+
 	va_list arguments;
 	Array * argv = array_new(ELEM_TYPE_STR);
 
@@ -398,10 +411,13 @@ void* mw_call_module_function_blocking2(
 
 void* mw_call_module_function_blocking(
 		const char* module_id,
-		const char* function_id,
+		const char* function_id_,
 		const char* return_type,
 		...)
 {
+	// pad function_id to 17 characters...
+	char function_id[] = "_________________"; // Length 17
+	strncpy(function_id, function_id_, strlen(function_id_) < 17 ?: sizeof(function_id));
 
 	char *msg_id = message_generate_id();
 	(*(sockpair_module->fc_send))(app_core_conn, &delim1, 1);
@@ -456,6 +472,7 @@ void mw_add_rdc(const char* module, const char* address)
 
 void mw_register_rdcs()
 {
+	slog(SLOG_DEBUG, "%s", __func__);
 	mw_call_module_function(
 			"core", "rdc_register", "voi",
 			NULL);
@@ -710,6 +727,7 @@ void* api_on_message(void* data)
 		strncpy(msg_data, data+27, size);
 		msg_data[size]='\0';
 
+		slog(SLOG_DEBUG, "CORE API ON MSG: %s", msg_data);
 		MESSAGE* msg = message_parse(msg_data);
 		ENDPOINT* ep = msg->ep;
 		if (ep)
@@ -730,6 +748,7 @@ void* api_on_message(void* data)
 		strncpy(msg_data, data+32, size);
 		msg_data[size]='\0';
 
+		slog(SLOG_DEBUG, "EXT API ON MSG: %s", msg_data);
 	}
 
 
