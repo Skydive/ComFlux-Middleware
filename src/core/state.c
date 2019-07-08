@@ -169,6 +169,7 @@ void buffer_update(BUFFER* buffer, const void* new_data, unsigned int new_size) 
 							word_end = i+1;
 							buffer_set(buffer, new_data, word_start, word_end);
 							/* apply the callback for this connection */
+							printf("BUFFER UPDATE: %s\n", buffer->data);
 							if(buffer->state == app_state)
 							{
 								buffer_app_set(buffer);

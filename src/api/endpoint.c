@@ -867,7 +867,7 @@ int endpoint_unmap_all(ENDPOINT* endpoint)
 	char* result = (char*) mw_call_module_function_blocking(
 			"core", "unmap_all", "int",
 			endpoint->id, NULL);
-
+  printf("\nXAXAXA: UNMAP ALL RESULT: %s\n", result);
 	sscanf(result, "%010d", &return_value);
 	return return_value;
 }

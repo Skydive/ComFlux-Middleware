@@ -17,7 +17,7 @@ extern HashMap* endpoints;
 
 MESSAGE* message_new(const char* msg_, unsigned int status_)
 {
-	const char* msg = (msg != NULL) ? msg_ : "";
+	const char* msg = (msg_ != NULL) ? msg_ : "";
 
 	MESSAGE* message = (MESSAGE*)malloc(sizeof(MESSAGE));
 	message->_msg_json = json_new(msg);

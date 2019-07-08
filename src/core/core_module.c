@@ -744,7 +744,10 @@ char* _core_get_id(char id[50],
 
 	// pad function_id to 17 characters...
 	char function_id[] = "_________________"; // Length 17
-	strncpy(function_id, function_id_, strlen(function_id_) < 17 ?: sizeof(function_id));
+	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
+
+	printf("XAXA: CORE_GET_ID: %s\n", function_id);
+
 
 	strcpy(id, module_id);
 	strcat(id, function_id);

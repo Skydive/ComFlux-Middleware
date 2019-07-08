@@ -136,6 +136,7 @@ MESSAGE* rdc_build_register_addr_message(const char* addr, int flag)
 
 void rdc_register(RDC* r, MESSAGE* register_msg, int flag)
 {
+	slog(SLOG_DEBUG, "XAXAXA: RDC_REGISTER: %s %d", message_to_str(register_msg), flag);
 	if(r == NULL)
 	{
 		slog(SLOG_ERROR, "RDC: Can't register with null RDC");
@@ -173,13 +174,26 @@ void rdc_register(RDC* r, MESSAGE* register_msg, int flag)
 		                                    r->addr,
 		                                    query_json, NULL);
 
+	printf("RDC REGISTER!!! %d\n", register_map);
 	if(register_map == 0)
 	{
 		register_msg->ep = ep_reg_rdc->ep;
 
 	    //sync_init(rdc_register_pipe);
 		slog(SLOG_DEBUG, "%s: REGISTER MAP MESSAGE SEND, %s", __func__, message_to_str(register_msg));
-		core_ep_send_message(ep_reg_rdc, message_generate_id(), message_to_str(register_msg));
+		// WRAPS AGAIN...
+		//core_ep_send_message(ep_reg_rdc, message_generate_id(), message_to_str(register_msg));
+
+    if (!ep_can_send(ep_reg_rdc->ep))
+			return;
+
+    if (json_validate_message(ep_reg_rdc, register_msg->_msg_json))
+			return EP_NO_VALID;
+
+    char* msg_to_send = message_to_str(register_msg);
+
+		slog(SLOG_DEBUG, "CORE_EP_SEND_MESSAGE: %s", msg_to_send);
+    ep_send(ep_reg_rdc, msg_to_send, strlen(msg_to_send));
 
 		//sync_wait(rdc_register_pipe[1]);
 		//ep_unmap_all(ep_reg_rdc);

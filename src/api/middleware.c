@@ -261,8 +261,7 @@ int mw_call_module_function2(
 {
 	// pad function_id to 17 characters...
 	char function_id[] = "_________________"; // Length 17
-	strncpy(function_id, function_id_, strlen(function_id_) < 17 ?: sizeof(function_id));
-
+	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
 
 	va_list arguments;
 	Array * argv = array_new(ELEM_TYPE_STR);
@@ -313,7 +312,9 @@ int mw_call_module_function(
 
 	// pad function_id to 17 characters...
 	char function_id[] = "_________________"; // Length 17
-	strncpy(function_id, function_id_, strlen(function_id_) < 17 ?: sizeof(function_id));
+	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
+
+	printf("Function ID: %s\n", function_id);
 
 	char *msg_id = message_generate_id();
 	(*(sockpair_module->fc_send))(app_core_conn, &delim1, 1);
@@ -365,7 +366,7 @@ void* mw_call_module_function_blocking2(
 {
 	// pad function_id to 17 characters...
 	char function_id[] = "_________________"; // Length 17
-	strncpy(function_id, function_id_, strlen(function_id_) < 17 ?: sizeof(function_id));
+	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
 
 	va_list arguments;
 	Array * argv = array_new(ELEM_TYPE_STR);
@@ -417,7 +418,7 @@ void* mw_call_module_function_blocking(
 {
 	// pad function_id to 17 characters...
 	char function_id[] = "_________________"; // Length 17
-	strncpy(function_id, function_id_, strlen(function_id_) < 17 ?: sizeof(function_id));
+	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
 
 	char *msg_id = message_generate_id();
 	(*(sockpair_module->fc_send))(app_core_conn, &delim1, 1);

@@ -82,7 +82,6 @@ void rdc_lookup(RDC* r, MESSAGE* lookup_msg); //, JSON* query
 void rdc_lookup_all(MESSAGE* lookup_msg, JSON* query);
 
 
-
 MESSAGE* rdc_build_register_message(int flag);
 MESSAGE* rdc_build_register_addr_message(const char* addr, int flag);
 
