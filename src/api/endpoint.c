@@ -248,8 +248,11 @@ int endpoint_register(ENDPOINT *ep)
             "core", "register_endpoint", "int",
             ep_str, NULL);
 
-	if (result == NULL)
-		goto final;
+		printf("ENDPOINT REGISTER: %s\n", result);
+		//if (result == NULL)
+		//goto final;
+
+		slog(SLOG_WARN, "ENDPOINT REGISTER: %s", result); //XAXA
 
 	//ret_msg = message_parse(result);
 	//ret_json = ret_msg->_msg_json;

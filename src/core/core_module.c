@@ -225,9 +225,9 @@ int core_unmap_all(LOCAL_EP* lep)
 {
 	slog(SLOG_DEBUG, "CORE: %s", __func__);
 
-    ep_unmap_all(lep);
+	ep_unmap_all(lep);
 
-    return 0;
+	return 0;
 }
 
 /* TODO */
@@ -683,7 +683,7 @@ int core_load_access_module(const char* path, const char* config_json)
 
 char* core_ep_get_all_connections(LOCAL_EP* lep)
 {
-	printf("het ll connections: %d\n\n", array_size(lep->mappings_states));
+	//printf("het ll connections: %d\n\n", array_size(lep->mappings_states));
 	slog(SLOG_DEBUG, "CORE: %s", __func__);
 
 	if(lep==NULL)
@@ -743,11 +743,8 @@ char* _core_get_id(char id[50],
     //id = (char*)malloc(50 * sizeof(char));
 
 	// pad function_id to 17 characters...
-	char function_id[] = "_________________"; // Length 17
+	char function_id[18] = {[0 ...sizeof(function_id)-2]='_', [sizeof(function_id)-1] = '\0'}; // Length 17
 	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
-
-	printf("XAXA: CORE_GET_ID: %s\n", function_id);
-
 
 	strcpy(id, module_id);
 	strcat(id, function_id);

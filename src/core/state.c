@@ -85,6 +85,7 @@ void buffer_app_set(BUFFER *buffer)
 	char module_id[5], function_id[18], return_type[4], msg_id[11];
 	void* arg = NULL;
 	int cmd=0;
+	printf("RECEIVED: %s\n", buffer->data);
 	sscanf(buffer->data, "{{%d}{%4s}{%17s}{%3s}{%10s}",
 			&cmd, module_id, function_id, return_type, msg_id);
 
@@ -169,7 +170,6 @@ void buffer_update(BUFFER* buffer, const void* new_data, unsigned int new_size) 
 							word_end = i+1;
 							buffer_set(buffer, new_data, word_start, word_end);
 							/* apply the callback for this connection */
-							printf("BUFFER UPDATE: %s\n", buffer->data);
 							if(buffer->state == app_state)
 							{
 								buffer_app_set(buffer);
@@ -294,7 +294,7 @@ int state_send_message(STATE* state, MESSAGE* msg)
 
 	char* msg_str = message_to_str(msg);
 
-	slog(SLOG_DEBUG, "STATE SEND MESSAGE: %s\n", msg_str);
+	//slog(SLOG_DEBUG, "STATE SEND MESSAGE: %s\n", msg_str);
 	int result = (*(state->module->fc_send_data))(state->conn, msg_str);
 
 	free(msg_str);

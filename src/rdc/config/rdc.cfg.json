@@ -4,12 +4,12 @@
 
 
     "app_config":{
-        "log_level": 6,
+        "log_level": 0,
         "log_file": "rdc.log"
     },
 
     "core_config":{
-        "log_level": 6,
+        "log_level": 0,
         "log_file": "rdc.log",
         "com_libs": [
             {

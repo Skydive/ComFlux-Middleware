@@ -11,6 +11,7 @@
 #include <arpa/inet.h> //inet_addr
 #include <unistd.h>
 
+
 #include <sys/ioctl.h>
 #include <netinet/in.h>
 
@@ -27,7 +28,7 @@
 
 #include <hashmap.h>
 #include "sync.h"
-//#include <slog.h>
+#include <slog.h>
 
 void* module;
 /* functions called in the same thread
@@ -85,7 +86,8 @@ char* sync_wait(int _conn)
 		recvSize = recv(_conn , (char*)&varSize, sizeof(uint32_t), 0);
 		if(recvSize <= 0)
 		{
-			//slog(SLOG_WARN, "SYNC wait: Recv size failed from (%d). Code %d. Closing connection ", _conn, recvSize);
+			printf("SYNC wait: Recv size failed from (%d). Code %d. Closing connection\n", _conn, recvSize);
+			printf("ERRNO: %d\n", errno);
 
 /*            if (on_disconnect_handler)
                 (*on_disconnect_handler)(NULL, _conn);
@@ -96,9 +98,9 @@ char* sync_wait(int _conn)
 		}
 		if (recvSize != sizeof (uint32_t))
 		{
-			//slog(SLOG_WARN,
-			//	 "SYNC wait: error receiving size on sock (%d), val: %d; continue",
-			//	 _conn, recvSize);
+			slog(SLOG_WARN,
+				 "SYNC wait: error receiving size on sock (%d), val: %d; continue",
+				 _conn, recvSize);
 			continue;
 		}
 
@@ -106,14 +108,14 @@ char* sync_wait(int _conn)
 		recvSize = recv(_conn , &recvEscape, 1, 0);
 		if(recvEscape != escape)
 		{
-			//slog(SLOG_WARN,
-			//	"SYNC wait: On sock (%d), did not receive correct escape code %c; ignoring size %d",
-			//	 _conn, recvEscape, recvSize);
+			slog(SLOG_DEBUG,
+				"SYNC wait: On sock (%d), did not receive correct escape code %c; ignoring size %d",
+				 _conn, recvEscape, recvSize);
 			continue;
 		}
 		if(recvSize <= 0)
 		{
-			//slog(SLOG_WARN, "SYNC wait: Recv escape failed from (%d). closing connection ", _conn);
+			slog(SLOG_DEBUG, "SYNC wait: Recv escape failed from (%d). closing connection ", _conn);
 
 /*            if (on_disconnect_handler)
                 (*on_disconnect_handler)(NULL, _conn);
@@ -124,9 +126,9 @@ char* sync_wait(int _conn)
 		}
 		if (recvSize != 1) // Should never get here
 		{
-			//slog(SLOG_WARN,
-			//	 "SYNC wait: error receiving escape on sock (%d), val: %d; continue",
-			//	 _conn, recvSize);
+			slog(SLOG_DEBUG,
+				 "SYNC wait: error receiving escape on sock (%d), val: %d; continue",
+				 _conn, recvSize);
 			continue;
 		}
 

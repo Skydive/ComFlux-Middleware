@@ -212,7 +212,7 @@ char* sockpair_receive_message(int _conn)
 		recvSize = recv(_conn , (char*)&varSize, sizeof(uint32_t), 0);
 		if(recvSize <= 0)
 		{
-			slog(SLOG_WARN, "SOCKPAIR: Recv size failed from (%d). Code %d. Closing connection ", _conn, recvSize);
+			slog(SLOG_DEBUG, "SOCKPAIR: Recv size failed from (%d). Code %d. Closing connection ", _conn, recvSize);
 
             if (on_disconnect_handler)
                 (*on_disconnect_handler)(NULL, _conn);

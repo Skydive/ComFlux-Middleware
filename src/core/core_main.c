@@ -59,7 +59,7 @@ int load_core_config(const char* config_file)
 		sprintf(log_file, "log/core_%s_%s", app_name, app_key);
 	}
 
-	slog_init_args(log_lvl, log_lvl, 1, 1, log_file);
+	slog_init_args(log_lvl, log_lvl, 1, 1, NULL);//, log_file);
 
 	final:{
 		json_free(core_json);

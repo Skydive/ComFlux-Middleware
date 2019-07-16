@@ -263,6 +263,8 @@ void core_on_component_message(STATE* state_ptr, const char* msg_id,
 	if(return_msg != NULL)
 	{
 		char str[11];
+		sprintf(str, "%010lu", strlen(return_msg));
+
 		COM_MODULE* sockpair_module = app_state->module;
 		(*(sockpair_module->fc_send))(app_state->conn, &delim1, 1);
 
@@ -272,13 +274,13 @@ void core_on_component_message(STATE* state_ptr, const char* msg_id,
 		(*(sockpair_module->fc_send))(app_state->conn, delim21, 2);
 		(*(sockpair_module->fc_send))(app_state->conn, return_type, 3);
 		(*(sockpair_module->fc_send))(app_state->conn, delim21, 2);
-		sprintf(str, "%010lu", strlen(return_msg));
 		(*(sockpair_module->fc_send))(app_state->conn, str, 10);
 		(*(sockpair_module->fc_send))(app_state->conn, delim21, 2);
 		(*(sockpair_module->fc_send))(app_state->conn, return_msg, strlen(return_msg));
 
 		(*(sockpair_module->fc_send))(app_state->conn, &delim2, 1);
 		(*(sockpair_module->fc_send))(app_state->conn, &delim2, 1);
+
 		free(return_msg);
 
 		//printf("result: %s\n", message_to_str(return_msg));
@@ -355,7 +357,6 @@ void call_external_command_handler(STATE* state_ptr, MESSAGE* msg)
 	/* apply the handler of the ep for incoming messages */
 	if(state_ptr->lep->ep->handler != NULL)
 	{
-		slog(SLOG_DEBUG, "CALL_EXTERNAL CMD HANDLER: %s\n", message_to_str(msg));
 		(*state_ptr->lep->ep->handler)(msg);
 	}
 	else/* do nothing*/

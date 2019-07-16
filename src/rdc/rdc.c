@@ -119,8 +119,7 @@ void rdc_register_handler(MESSAGE *msg)
       pthread_t getmd_thread;
       pthread_create(&getmd_thread, NULL, rdc_getmd_request, metadata_json);
 
-
-            break;
+      break;
     }
 
     case RDC_UNREGISTER: {
@@ -128,7 +127,6 @@ void rdc_register_handler(MESSAGE *msg)
       JSON* metadata_json = json_get_json(registration_json, "manifest");
       JSON* component_json = json_get_json(metadata_json, "component");
       char *app_id = json_get_str(metadata_json, "app_name");
-
 
       printf("App id %s\n", app_id);
       map_remove(cpts, (void*)app_id);

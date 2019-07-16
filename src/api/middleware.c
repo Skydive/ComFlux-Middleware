@@ -155,7 +155,7 @@ char* mw_init(const char* cpt_name, int log_lvl, bool use_socketpair)
 			log_lvl,
 			log_lvl,
 			1, 1,
-			config_get_app_log_file());
+			NULL);//config_get_app_log_file());
 
 	memset(blocking_msg_id,'\0',13);
 
@@ -260,7 +260,7 @@ int mw_call_module_function2(
 		...)
 {
 	// pad function_id to 17 characters...
-	char function_id[] = "_________________"; // Length 17
+	char function_id[18] = {[0 ...sizeof(function_id)-2]='_', [sizeof(function_id)-1] = '\0'}; // Length 17
 	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
 
 	va_list arguments;
@@ -311,7 +311,7 @@ int mw_call_module_function(
 {
 
 	// pad function_id to 17 characters...
-	char function_id[] = "_________________"; // Length 17
+	char function_id[18] = {[0 ...sizeof(function_id)-2]='_', [sizeof(function_id)-1] = '\0'}; // Length 17
 	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
 
 	printf("Function ID: %s\n", function_id);
@@ -365,7 +365,7 @@ void* mw_call_module_function_blocking2(
 		...)
 {
 	// pad function_id to 17 characters...
-	char function_id[] = "_________________"; // Length 17
+	char function_id[18] = {[0 ...sizeof(function_id)-2]='_', [sizeof(function_id)-1] = '\0'}; // Length 17
 	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
 
 	va_list arguments;
@@ -403,7 +403,9 @@ void* mw_call_module_function_blocking2(
 	int count = 0;
 	ioctl(fds_blocking_call[1], FIONBIO, &count);
 
+	slog(SLOG_DEBUG, "FUNCTION ID SW: %s", function_id); //XAXA
 	char* result = sync_wait(fds_blocking_call[1]);
+	slog(SLOG_DEBUG, "RESULT: %s", result);
 
 	waiting_blocking_call = 0;
 
@@ -417,7 +419,7 @@ void* mw_call_module_function_blocking(
 		...)
 {
 	// pad function_id to 17 characters...
-	char function_id[] = "_________________"; // Length 17
+	char function_id[18] = {[0 ...sizeof(function_id)-2]='_', [sizeof(function_id)-1] = '\0'}; // Length 17
 	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
 
 	char *msg_id = message_generate_id();
@@ -459,7 +461,9 @@ void* mw_call_module_function_blocking(
 
 	strcpy(blocking_msg_id, msg_id);
 	waiting_blocking_call = 1;
+	slog(SLOG_DEBUG, "XAXA: CALLING: %s", function_id);
 	char* result = sync_wait(fds_blocking_call[1]);
+	slog(SLOG_DEBUG, "XAXA: RESULT BLOCKING: %s", result);
 
 	return result;
 }
