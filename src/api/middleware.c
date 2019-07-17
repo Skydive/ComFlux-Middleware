@@ -111,10 +111,15 @@ void atexit_cb()
 
 }
 
+void atexit_app()
+{
+	mw_terminate_core();
+}
+
 void int_handler(int sig)
 {
 	// Kill properly...
-	mw_terminate_core();
+	atexit_app();
 	atexit_cb();
 	printf("SIGINT: Terminating process...\n");
 	exit(1);
@@ -613,6 +618,7 @@ int core_spawn_addr(char *core_addr)
 	}
 	else if(core_pid>0)/*parent*/
 	{
+		atexit(atexit_app);
 		int count = 0;
 		ioctl(fds_blocking_call[1], FIONBIO, &count);
 		char* result = sync_wait(fds_blocking_call[1]);
