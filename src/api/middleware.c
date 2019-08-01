@@ -743,6 +743,7 @@ void* api_on_message(void* data)
 		ENDPOINT* ep = msg->ep;
 		if (ep)
 		{
+			slog(SLOG_ERROR, "EP HANDLER: %s", msg_data);
 			(*(ep->handler))(msg);
 		}
 		else
@@ -800,6 +801,7 @@ void* api_on_message(void* data)
 
 	final:{
 		free(msg_data);
+		free(data);
 		//json_free(msg_->_msg_json);
 		//message_free(msg_);
 
@@ -899,7 +901,22 @@ void buffer_update(BUFFER* buffer, const void* new_data, unsigned int new_size)
 							buffer_set(buffer, new_data, word_start, word_end);
 							/* apply the callback for this connection */
 
-							api_on_message(buffer->data);
+
+							char* new_data = strdup(buffer->data);
+							pthread_t cbthread;
+							int err;
+							err = pthread_create(&cbthread, NULL, &api_on_message, new_data);
+							if(err != 0) {
+								slog(SLOG_ERROR, "CONN buffer_update: can't create receive thread");
+								goto skip;
+							}
+							err = pthread_detach(cbthread);
+							if(err != 0) {
+								slog(SLOG_ERROR, "CONN buffer_update: Could not detach cb thread");
+								goto skip;
+							}
+						skip:
+
 							buffer_reset(buffer);
 
 							buffer->size = 0;

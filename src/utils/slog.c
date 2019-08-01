@@ -10,6 +10,8 @@
 #include <json.h>
 #include <utils.h>
 
+#include <sys/time.h>
+
 /* colors */
 #define CLR_NONE    "\x1B[0m"
 #define CLR_LIVE  	"\x1B[34m"
@@ -45,15 +47,18 @@ struct {
 /* timestamp */
 char* slog_timestamp()
 {
-	static time_t rawtime;
-	static struct tm * timeinfo;
-	static char buffer[23]; //max size of date in this format
+	static struct timeval tmnow;
+  static struct tm *tm;
+  static char buf[30], usec_buf[6];
+  gettimeofday(&tmnow, NULL);
+  tm = localtime(&tmnow.tv_sec);
+  strftime(buf,30,"%Y-%m-%d:%H:%M:%S", tm);
+       strcat(buf,".");
+       sprintf(usec_buf,"%d",(int)tmnow.tv_usec);
+       strcat(buf,usec_buf);
 
-	time (&rawtime);
-	timeinfo = localtime (&rawtime);
+       return buf;
 
-    strftime (buffer, 23,"%F:%T", timeinfo);
-    return buffer;
 }
 
 const char* slog_color(int lvl)

@@ -81,6 +81,7 @@ char* sync_wait(int _conn)
 
 	char* buf;
 
+ repeat:
 	do{
 		/* reading size */
 		recvSize = recv(_conn , (char*)&varSize, sizeof(uint32_t), 0);

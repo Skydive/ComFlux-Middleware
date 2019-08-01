@@ -70,6 +70,7 @@ char* com_init(void* module, const char* config_json)
 	{
 		my_conn = 1;
 		socketpair(AF_LOCAL, SOCK_STREAM, 0, fds);
+		slog_init_simple(0, "/home/timothy/sockpair_srv.log");
 		if (!recv_threads_runs)
 			sockpair_run_receive_thread(fds[my_conn]);
 	}
@@ -77,7 +78,7 @@ char* com_init(void* module, const char* config_json)
 	{
 		my_conn = 0;
 		fds[0] = json_get_int(args_json, "fd");
-
+		slog_init_simple(0, "/home/timothy/sockpair_clt.log");
 		if (!recv_threads_runs)
 			sockpair_run_receive_thread(fds[my_conn]);
 	}

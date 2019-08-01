@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <time.h>
 
+#include <stdlib.h>
 
 void print_callback(MESSAGE *msg)
 {
@@ -100,11 +101,11 @@ int main(int argc, char* argv[])
 	char* msgid;
 
 	int i = 0;
-	while (i < 1000)
+	sleep(5);
+	while (i < 100)
 	{
 		i++;
-		sleep(3);
-
+		sleep(1);
 		time ( &rawtime );
 		timeinfo = localtime ( &rawtime );
 

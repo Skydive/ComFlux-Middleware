@@ -34,18 +34,19 @@ void print_callback(MESSAGE* msg) {
 
 	/* build and send response */
 
-	JSON* msg_json;
+	JSON* msg_json = msg->_msg_json;
 	char* message;
 
 	time ( &rawtime );
 	timeinfo = localtime ( &rawtime );
 
-	msg_json = json_new(NULL);
-	json_set_int(msg_json, "value", rand() % 10);
-	json_set_str(msg_json, "datetime", asctime(timeinfo));
-
 	message = json_to_str(msg_json);
 	endpoint_send_response(ep_resp, msg->msg_id, message);
+
+	Array* c = ep_get_all_connections(ep_resp);
+	printf("CONS: %d\n", array_size(c));
+	array_free(c);
+
 
 	free(message);
     json_free(msg_json);
