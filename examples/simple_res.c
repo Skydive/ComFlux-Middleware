@@ -49,7 +49,7 @@ void print_callback(MESSAGE* msg) {
 
 
 	free(message);
-    json_free(msg_json);
+	json_free(msg_json);
 }
 
 int main(int argc, char* argv[]) {

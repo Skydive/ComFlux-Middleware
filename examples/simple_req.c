@@ -102,10 +102,9 @@ int main(int argc, char* argv[])
 
 	int i = 0;
 	sleep(5);
-	while (i < 100)
+	while (i < 1000)
 	{
 		i++;
-		sleep(1);
 		time ( &rawtime );
 		timeinfo = localtime ( &rawtime );
 
@@ -120,7 +119,7 @@ int main(int argc, char* argv[])
 
 		free(message);
 		free(msgid);
-        json_free(msg_json);
+    json_free(msg_json);
 	}
 
 	return 0;
