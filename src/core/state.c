@@ -85,7 +85,7 @@ void buffer_app_set(BUFFER *buffer)
 	char module_id[5], function_id[18], return_type[4], msg_id[11];
 	void* arg = NULL;
 	int cmd=0;
-	printf("RECEIVED: %s\n", buffer->data);
+	//printf("RECEIVED: %s\n", buffer->data);
 	sscanf(buffer->data, "{{%d}{%4s}{%17s}{%3s}{%10s}",
 			&cmd, module_id, function_id, return_type, msg_id);
 

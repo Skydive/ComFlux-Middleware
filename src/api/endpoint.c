@@ -248,7 +248,7 @@ int endpoint_register(ENDPOINT *ep)
             "core", "register_endpoint", "int",
             ep_str, NULL);
 
-		printf("ENDPOINT REGISTER: %s\n", result);
+		//printf("ENDPOINT REGISTER: %s\n", result);
 		//if (result == NULL)
 		//goto final;
 

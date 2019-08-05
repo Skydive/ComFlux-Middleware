@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 		json_set_str(msg_json, "datetime", asctime(timeinfo));
 
 		message = json_to_str(msg_json);
-		printf("Sending message: \n%s\n", message);
+		printf("Sending message (A&B): %s\n", message);
 		endpoint_send_message(ep_src, message);
 
         free(message);

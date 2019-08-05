@@ -197,6 +197,7 @@ void rdc_register(RDC* r, MESSAGE* register_msg, int flag)
 
 		//sync_wait(rdc_register_pipe[1]);
 		//ep_unmap_all(ep_reg_rdc);
+		printf("AEAEAE FIX1 %d\n", free_register_msg);
 	}
 	else
 	{
@@ -206,8 +207,11 @@ void rdc_register(RDC* r, MESSAGE* register_msg, int flag)
 				(flag==RDC_REGISTER)?"register":"unregister");
 	}
 
-	if(free_register_msg)
+	if(free_register_msg) {
+
 		message_free(register_msg);
+		printf("FREE MESSAGE!? [double free or corruption (fasttop)]\n");
+	}
 }
 
 void rdc_register_all(int flag)

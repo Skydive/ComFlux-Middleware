@@ -758,7 +758,7 @@ void* api_on_message(void* data)
 		msg_data[size]='\0';
 
 		slog(SLOG_DEBUG, "CORE API ON MSG: %s", msg_data);
-		slog(SLOG_ERROR, "EP HANDLER: %s", msg_data);
+		//slog(SLOG_ERROR, "EP HANDLER: %s", msg_data);
 		//(*(ep->handler))(msg);
 		//TODO: message problems...
 		api_thread_push(msg_data);
@@ -1007,12 +1007,12 @@ void api_thread_create() {
 
 void api_thread_destroy() {
 	api_msg_queue_active = false;
+	pthread_join(api_msg_thread, NULL);
 	api_msg_t* ret;
 	while((ret = StsQueue.pop(api_msg_queue)) != NULL) {
 		free(ret->msg_str);
 		free(ret);
 	}
-	pthread_join(api_msg_thread, NULL);
 	StsQueue.destroy(api_msg_queue);
 }
 
