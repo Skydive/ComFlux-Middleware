@@ -163,5 +163,4 @@ int mw_load_access_module(const char* lib_path, const char* cfg_path);
  */
 char* mw_get_remote_metdata(const char* module, int conn);
 
-
 #endif /* MIDDLEWARE_H_ */

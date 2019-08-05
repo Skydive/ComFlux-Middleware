@@ -38,6 +38,8 @@
 
 #include <conn_fifo.h>
 
+#include <sts_queue.h>
+
 /* indicates weather the app awaits a blocking return */
 int waiting_blocking_call = 0;
 
@@ -80,6 +82,19 @@ void api_on_disconnect(void* module, int conn);
 void* api_on_message(void* data);
 void api_on_first_data(COM_MODULE* module, int conn, const void* msg, unsigned int size);
 
+/* message thread */
+typedef struct {
+	char* msg_str;
+} api_msg_t;
+volatile bool api_msg_queue_active;
+StsHeader* api_msg_queue;
+pthread_t api_msg_thread;
+
+void api_thread_create();
+void* api_thread_func(void* _blank);
+void api_thread_destroy();
+
+void api_thread_push(const char* msg_str);
 
 /* buffer stuff */
 
@@ -113,6 +128,7 @@ void atexit_cb()
 
 void atexit_app()
 {
+	printf("AT EXIT APP: MEME MEME\n");
 	mw_terminate_core();
 }
 
@@ -234,6 +250,7 @@ void mw_terminate_core()
 	mw_call_module_function(
 			"core", "terminate________", "voi",
 			NULL);
+	api_thread_destroy();
 }
 
 void mw_add_manifest(const char* manifest_str)
@@ -663,10 +680,12 @@ int core_spawn_fd(int fds, char* app_name)
 	}
 	else if(core_pid>0)/*parent*/
 	{
+		atexit(atexit_app);
 		int count = 0;
 		ioctl(fds_blocking_call[1], FIONBIO, &count);
 		char* result = sync_wait(fds_blocking_call[1]);
 
+		api_thread_create();
 	}
 	else /* error */
 	{   /*todo error handling*/
@@ -739,15 +758,10 @@ void* api_on_message(void* data)
 		msg_data[size]='\0';
 
 		slog(SLOG_DEBUG, "CORE API ON MSG: %s", msg_data);
-		MESSAGE* msg = message_parse(msg_data);
-		ENDPOINT* ep = msg->ep;
-		if (ep)
-		{
-			slog(SLOG_ERROR, "EP HANDLER: %s", msg_data);
-			(*(ep->handler))(msg);
-		}
-		else
-			goto final;
+		slog(SLOG_ERROR, "EP HANDLER: %s", msg_data);
+		//(*(ep->handler))(msg);
+		//TODO: message problems...
+		api_thread_push(msg_data);
 
 	}
 	else if(cmd == 'b') /* external */
@@ -799,15 +813,11 @@ void* api_on_message(void* data)
 	}
 	*/
 
-	final:{
-		free(msg_data);
-		free(data);
+	free(msg_data);
 		//json_free(msg_->_msg_json);
-		//message_free(msg_);
+		//message_free(msg_data);
 
-
-		return NULL;
-	}
+	return NULL;
 }
 
 void api_on_connect(void* module, int conn)
@@ -895,14 +905,14 @@ void buffer_update(BUFFER* buffer, const void* new_data, unsigned int new_size)
 						buffer->brackets -= 1;
 
 						if(buffer->brackets == 0) // finished 1 word
-						{
+					 	{
 							buffer->buffer_state = BUFFER_FINAL;
 							word_end = i+1;
 							buffer_set(buffer, new_data, word_start, word_end);
 							/* apply the callback for this connection */
 
 
-							char* new_data = strdup(buffer->data);
+							/*char* new_data = strdup(buffer->data);
 							pthread_t cbthread;
 							int err;
 							err = pthread_create(&cbthread, NULL, &api_on_message, new_data);
@@ -915,7 +925,9 @@ void buffer_update(BUFFER* buffer, const void* new_data, unsigned int new_size)
 								slog(SLOG_ERROR, "CONN buffer_update: Could not detach cb thread");
 								goto skip;
 							}
-						skip:
+							skip:*/
+
+							api_on_message(buffer->data);
 
 							buffer_reset(buffer);
 
@@ -974,4 +986,56 @@ void buffer_update(BUFFER* buffer, const void* new_data, unsigned int new_size)
 
 	if(word_start<new_size && buffer->buffer_state != BUFFER_FINAL)
 		buffer_set(buffer, new_data, word_start, new_size);
+}
+
+void api_thread_create() {
+	api_msg_queue_active = true;
+	api_msg_queue = StsQueue.create();
+
+	int err;
+	err = pthread_create(&api_msg_thread, NULL, &api_thread_func, NULL);
+	if(err != 0) {
+		slog(SLOG_ERROR, "API THREAD: api_thread_create: can't create thread");
+		return;
+	}
+	/*err = pthread_detach(api_msg_thread);
+	if(err != 0) {
+		slog(SLOG_ERROR, "API THREAD: api_thread_create: can't detach thread");
+		return;
+		}*/
+}
+
+void api_thread_destroy() {
+	api_msg_queue_active = false;
+	api_msg_t* ret;
+	while((ret = StsQueue.pop(api_msg_queue)) != NULL) {
+		free(ret->msg_str);
+		free(ret);
+	}
+	pthread_join(api_msg_thread, NULL);
+	StsQueue.destroy(api_msg_queue);
+}
+
+void* api_thread_func(void* _blank) {
+	while(api_msg_queue_active) {
+		api_msg_t* ret = StsQueue.pop(api_msg_queue);
+		if(ret == NULL)
+			continue;
+
+		MESSAGE* msg = message_parse(ret->msg_str);
+		ENDPOINT* ep = msg->ep;
+
+		(*ep->handler)(msg);
+
+		message_free(msg);
+		free(ret->msg_str);
+
+		free(ret);
+	}
+}
+
+void api_thread_push(const char* msg_str) {
+	api_msg_t* api_msg = (api_msg_t*)malloc(sizeof(api_msg_t));
+	api_msg->msg_str = strdup(msg_str);
+	StsQueue.push(api_msg_queue, api_msg);
 }
