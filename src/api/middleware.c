@@ -130,13 +130,14 @@ void atexit_app()
 {
 	printf("AT EXIT APP: MEME MEME\n");
 	mw_terminate_core();
+	atexit_cb();
 }
 
 void int_handler(int sig)
 {
 	// Kill properly...
-	atexit_app();
-	atexit_cb();
+	//atexit_app();
+	//atexit_cb();
 	printf("SIGINT: Terminating process...\n");
 	exit(1);
 }
@@ -757,6 +758,7 @@ void* api_on_message(void* data)
 		strncpy(msg_data, data+27, size);
 		msg_data[size]='\0';
 
+		slog(SLOG_DEBUG, "BROKEN MSG?: %s", msg);
 		slog(SLOG_DEBUG, "CORE API ON MSG: %s", msg_data);
 		//slog(SLOG_ERROR, "EP HANDLER: %s", msg_data);
 		//(*(ep->handler))(msg);
@@ -1014,6 +1016,7 @@ void api_thread_destroy() {
 		free(ret);
 	}
 	StsQueue.destroy(api_msg_queue);
+	printf("destroy!");
 }
 
 void* api_thread_func(void* _blank) {
