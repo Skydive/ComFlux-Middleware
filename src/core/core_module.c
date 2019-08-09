@@ -645,6 +645,7 @@ void core_terminate()
     /* close app sockpair */
     (*(app_state->module->fc_connection_close))(app_state->conn);
 
+		eps_free();
     exit(0);
 }
 

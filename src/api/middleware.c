@@ -560,6 +560,7 @@ int mw_load_com_module(const char* libpath, const char* cfgpath)
 		return -1;
 
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 
@@ -590,6 +591,7 @@ int mw_load_access_module(const char* libpath, const char* cfgpath)
 		return -1;
 
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 
@@ -685,6 +687,7 @@ int core_spawn_fd(int fds, char* app_name)
 		int count = 0;
 		ioctl(fds_blocking_call[1], FIONBIO, &count);
 		char* result = sync_wait(fds_blocking_call[1]);
+		free(result);
 
 		api_thread_create();
 	}

@@ -258,6 +258,7 @@ int endpoint_register(ENDPOINT *ep)
 	//ret_json = ret_msg->_msg_json;
 	//return_value = json_get_int(ret_json, "return_value");
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	final:
 	{
 		//json_free(ret_json);
@@ -526,6 +527,7 @@ int endpoint_more_messages(ENDPOINT* endpoint)
 		return -1;
 
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 
@@ -542,6 +544,7 @@ int endpoint_more_requests(ENDPOINT* endpoint)
 		return -1;
 
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 
@@ -558,6 +561,7 @@ int endpoint_more_responses(ENDPOINT* endpoint, const char* req_id)
 		return -1;
 
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 
@@ -691,6 +695,8 @@ Array* ep_get_all_connections(ENDPOINT* endpoint)
 	JSON* all_conns_json = json_new(resp);
 	Array* all_conns_array = json_get_jsonarray(all_conns_json, "all_mappings");
 
+	free(resp);
+	json_free(all_conns_json);
 	return all_conns_array;
 }
 
@@ -772,6 +778,7 @@ int endpoint_map_to(ENDPOINT* endpoint, const char* address, const char* ep_quer
 		return -1;
 
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 
@@ -804,6 +811,7 @@ int endpoint_map_module(ENDPOINT* endpoint, const char* module, const char* addr
 		return -1;
 
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 
@@ -842,6 +850,7 @@ int endpoint_unmap_from(ENDPOINT* endpoint, const char* addr)
 		return -1;
 
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 
@@ -860,6 +869,7 @@ int endpoint_unmap_connection(ENDPOINT* endpoint, const char* module, int conn)
 		return -1;
 
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 
@@ -872,6 +882,7 @@ int endpoint_unmap_all(ENDPOINT* endpoint)
 			endpoint->id, NULL);
   printf("\nXAXAXA: UNMAP ALL RESULT: %s\n", result);
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 
@@ -889,6 +900,7 @@ int endpoint_divert(ENDPOINT *ep, char *ep_id_from, char* addr, char *ep_id_to)
 		return -1;
 
 	sscanf(result, "%010d", &return_value);
+	free(result);
 	return return_value;
 }
 

@@ -439,6 +439,7 @@ void* sockpair_receive_function(void *conn)
 			(*on_data_handler)(thismodule, _conn, buf, (unsigned int)size);
 
 
+		free(buf);
 	}while(1);
 	return NULL;
 }

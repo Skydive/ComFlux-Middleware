@@ -17,6 +17,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <pthread.h>
+
+pthread_mutex_t ipc_lock;
+
 extern STATE* app_state;
 
 /* in core.c */
@@ -154,8 +158,12 @@ void ep_local_free(LOCAL_EP *lep)
 	free(lep);
 }
 
+
+
 void ep_default_handler_send_to_app(MESSAGE* msg)
 {
+
+	pthread_mutex_lock(&ipc_lock);
 
 	const char delim1 = '{';
 	const char delim2 = '}';
@@ -183,6 +191,7 @@ void ep_default_handler_send_to_app(MESSAGE* msg)
 	(*(sockpair_module->fc_send))(app_state->conn, &delim2, 1);
 	free(return_msg);
 
+	pthread_mutex_unlock(&ipc_lock);
 	//printf("here\n");
 	//slog(SLOG_INFO, "EP LOCAL: default handler send_to_app: %d: %s", array_size(((LOCAL_EP*)(msg->ep->data))->filters), msg->msg_str);
 	//JSON* msg_json = msg->_msg_json;
@@ -575,5 +584,17 @@ int eps_init()
 	endpoints = map_new(KEY_TYPE_STR);
 	locales = map_new(KEY_TYPE_STR);
 
+	if(pthread_mutex_init(&ipc_lock, NULL) != 0) {
+		printf("IPC CORE -> APP COMMUNICATION MUTEX INIT FAILED!\n");
+		exit(1);
+	}
+
 	return (endpoints != NULL && locales != NULL);
+}
+
+void eps_free()
+{
+	map_free(endpoints);
+	map_free(locales);
+	pthread_mutex_destroy(&ipc_lock);
 }
