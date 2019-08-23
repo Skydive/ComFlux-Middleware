@@ -369,13 +369,11 @@ STATE* states_get(COM_MODULE* module, int conn)
 
 int states_set(COM_MODULE* module, int conn, STATE* state)
 {
-	if(state == NULL)
-	{
-		return -1;
-	}
 
 	char* conn_str=(char*) malloc(105*sizeof(char));
 	sprintf(conn_str, "%s:%d", module->name, conn);
 
+	if(state == NULL)
+		return map_remove(conn_state, conn_str);
 	return map_insert(conn_state, conn_str, state);
 }

@@ -19,6 +19,7 @@
 //#include "state.h"
 #include "com_wrapper.h"
 
+
 struct _STATE;
 
 typedef struct _LOCAL_EP{
@@ -212,8 +213,9 @@ int ep_send(LOCAL_EP *lep, const void* data, unsigned int size);
 HashMap *endpoints; 	/* id->all endpoints */
 HashMap *locales;	 	/* id->remote_endpoints */
 
-int eps_init();
+pthread_mutex_t ipc_lock;
 
+int eps_init();
 void eps_free();
 
 #endif /* ENDPOINT_H_ */

@@ -696,7 +696,6 @@ Array* ep_get_all_connections(ENDPOINT* endpoint)
 	Array* all_conns_array = json_get_jsonarray(all_conns_json, "all_mappings");
 
 	free(resp);
-	json_free(all_conns_json);
 	return all_conns_array;
 }
 

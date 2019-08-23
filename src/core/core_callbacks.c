@@ -210,8 +210,9 @@ void core_on_message(STATE* state_ptr, MESSAGE* _msg)
 			core_proto_map_ack(state_ptr, _msg);
 		break;
 	case MSG_UNMAP:
-		if(state_ptr->is_mapped)
+		if(state_ptr->is_mapped) {
 			ep_unmap_recv(state_ptr->lep, state_ptr);
+		}
 		break;
 	case MSG_UNMAP_ACK:
 		ep_unmap_final(state_ptr->lep, state_ptr);
@@ -266,6 +267,7 @@ void core_on_component_message(STATE* state_ptr, const char* msg_id,
 		sprintf(str, "%010lu", strlen(return_msg));
 
 		COM_MODULE* sockpair_module = app_state->module;
+		pthread_mutex_lock(&ipc_lock);
 		(*(sockpair_module->fc_send))(app_state->conn, &delim1, 1);
 
 		(*(sockpair_module->fc_send))(app_state->conn, &b, 1);
@@ -280,6 +282,7 @@ void core_on_component_message(STATE* state_ptr, const char* msg_id,
 
 		(*(sockpair_module->fc_send))(app_state->conn, &delim2, 1);
 		(*(sockpair_module->fc_send))(app_state->conn, &delim2, 1);
+		pthread_mutex_unlock(&ipc_lock);
 
 		free(return_msg);
 

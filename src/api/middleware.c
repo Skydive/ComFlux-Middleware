@@ -446,6 +446,16 @@ void* mw_call_module_function_blocking(
 	strncpy(function_id, function_id_, strlen(function_id_) < strlen(function_id) ? strlen(function_id_) : strlen(function_id));
 
 	char *msg_id = message_generate_id();
+
+	strcpy(blocking_msg_id, msg_id);
+	slog(SLOG_DEBUG, "APP: set blocking_msg_id: %s", blocking_msg_id);
+	waiting_blocking_call = 1;
+	// CORE can network back to app and run sync_trigger BEFORE blocking_msg_id is updated to its true value. MOVED THIS UP
+	// How is this even possible? Time delay between final brace being sent to buffer_update, and return value being
+	// retrieved is somehow SMALLER than that to copy a string, do an slog, and set a boolean!?
+	// Maybe it's the slog file handle? and the bug was caused by the slog statement itself!?
+	// Oh god...
+
 	(*(sockpair_module->fc_send))(app_core_conn, &delim1, 1);
 
 	(*(sockpair_module->fc_send))(app_core_conn, &delim1, 1);
@@ -482,8 +492,7 @@ void* mw_call_module_function_blocking(
 
 	va_end(arguments);
 
-	strcpy(blocking_msg_id, msg_id);
-	waiting_blocking_call = 1;
+
 	slog(SLOG_DEBUG, "XAXA: CALLING: %s", function_id);
 	char* result = sync_wait(fds_blocking_call[1]);
 	slog(SLOG_DEBUG, "XAXA: RESULT BLOCKING: %s", result);
@@ -761,8 +770,8 @@ void* api_on_message(void* data)
 		strncpy(msg_data, data+27, size);
 		msg_data[size]='\0';
 
-		slog(SLOG_DEBUG, "BROKEN MSG?: %s", msg);
-		slog(SLOG_DEBUG, "CORE API ON MSG: %s", msg_data);
+		//slog(SLOG_DEBUG, "BROKEN MSG?: %s", msg);
+		//slog(SLOG_DEBUG, "CORE API ON MSG: %s", msg_data);
 		//slog(SLOG_ERROR, "EP HANDLER: %s", msg_data);
 		//(*(ep->handler))(msg);
 		//TODO: message problems...
@@ -780,6 +789,7 @@ void* api_on_message(void* data)
 		msg_data[size]='\0';
 
 		slog(SLOG_DEBUG, "EXT API ON MSG: %s", msg_data);
+		slog(SLOG_DEBUG, "[APP] BLOCKING CALLS: %d ?? %s == %s", waiting_blocking_call, blocking_msg_id, msg_id);
 	}
 
 
@@ -796,6 +806,7 @@ void* api_on_message(void* data)
 		if (strcmp(blocking_msg_id, msg_id) == 0)
 		{
 			waiting_blocking_call = 0;
+			slog(SLOG_DEBUG, "[CORE] SYNC TRIGGER: %s\n", msg_data);
 			sync_trigger(fds_blocking_call[0], msg_data);
 		}
 	}

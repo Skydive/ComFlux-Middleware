@@ -19,7 +19,8 @@
 
 #include <pthread.h>
 
-pthread_mutex_t ipc_lock;
+
+extern pthread_mutex_t ipc_lock;
 
 extern STATE* app_state;
 
@@ -451,14 +452,19 @@ void ep_unmap_recv(LOCAL_EP* lep, STATE* state_ptr)
 	MESSAGE* unmap_ack_msg = message_new(NULL, MSG_UNMAP_ACK);
 	state_send_message(state_ptr, unmap_ack_msg);
 	message_free(unmap_ack_msg);
-	state_ptr->is_mapped = 0;
 
     /* close connection */
     ep_unmap_final(lep, state_ptr);
 }
 
+void dummy_disconnect(COM_MODULE* module, int conn) {
+	STATE *state_ptr = states_get(module, conn);
+	state_free(state_ptr);
+	states_set(module, conn, NULL);
+}
+
 void ep_unmap_final(LOCAL_EP* lep, STATE* state_ptr)
-{
+{ 
 	/* error checking */
 	if(state_ptr == NULL)
 	{
@@ -475,18 +481,23 @@ void ep_unmap_final(LOCAL_EP* lep, STATE* state_ptr)
 		return;
 	}
 
+	printf("EP UNMAP FINAL!!!!\n");
 	/* remove from the array of mappings */
 	if(array_remove(lep->mappings_states, state_ptr) < 0)
 	{
 		return;
 	}
 
-	/* close the connection
+	state_ptr->is_mapped = 0;
+
+	/* close the connection */
+
+	// core_on_disconnect HANDLER SEGFAULTS when disconnecting access_rights!?
+	// Only TRULY exists for the app_state, sockproxy comm module, not tcp.
+	(*(state_ptr->module->fc_set_on_disconnect))(dummy_disconnect);
 	(*(state_ptr->module->fc_connection_close))(state_ptr->conn);
-	state_free(state_ptr);*/
+	//state_free(state_ptr);
 }
-
-
 
 void ep_unmap_all(LOCAL_EP *lep)
 {
@@ -504,6 +515,8 @@ void ep_unmap_all(LOCAL_EP *lep)
 
 	array_free(lep->mappings_states);
 	lep->mappings_states = array_new(ELEM_TYPE_PTR);
+
+	printf("ENDPOINT UMAPPED ALL!\n\n\n");
 }
 
 

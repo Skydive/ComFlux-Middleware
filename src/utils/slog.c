@@ -12,6 +12,9 @@
 
 #include <sys/time.h>
 
+#include <sys/types.h>
+#include <sys/syscall.h>
+
 /* colors */
 #define CLR_NONE    "\x1B[0m"
 #define CLR_LIVE  	"\x1B[34m"
@@ -158,6 +161,11 @@ void slog(int lvl, const char* format, ...)
 			strcat(message, slog_lvl_name(lvl));
 			strcat(message, SLOG_ESC);
 		}
+
+
+    char tb[32];
+		sprintf(tb, " (%d) ", syscall(__NR_gettid));
+		strcat(message, tb);
 
 		strcat(message, formatted_message);
 		strcat(message, "\n");

@@ -360,6 +360,7 @@ void core_proto_map_ack(STATE *state_ptr, MESSAGE *map_ack_msg)
 			//	state_ptr->module->name, state_ptr->conn);
 	}
 
+	state_ptr->is_mapped = 1; // seems to fix unmapping problem!?
 	//TODO
 	if(state_ptr->state == STATE_EXT_MSG)
 	{
@@ -419,10 +420,10 @@ void core_proto_map(STATE *state_ptr, MESSAGE *map_msg)
 	}
 
 	state_ptr->flag = map_validate;
+	state_ptr->is_mapped = 1; // seems to fix unmapping problem!?
 
 	JSON *map_ack_json = json_build_map_ack(lep, map_validate, NULL);
 	state_send_json(state_ptr, NULL, map_ack_json, MSG_MAP_ACK);
-
 	json_free(map_ack_json);
 	//json_free(map_json);
 }

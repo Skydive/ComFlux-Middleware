@@ -112,6 +112,7 @@ int core_map(LOCAL_EP* lep, COM_MODULE* com_module, const char* addr, JSON* ep_q
         state_ptr->addr = strdup(addr);
     }
 
+		state_ptr->is_mapped = 1; // untested - fixed unmap on sink?!
     return state_ptr->flag;
 }
 
